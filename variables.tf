@@ -3,11 +3,6 @@ variable "aws_region" {
   description = "The AWS region"
 }
 
-variable "ssh_key" {
-  type        = "string"
-  description = "The key name that should be used for the instances."
-}
-
 variable "asg_config" {
   type        = "map"
   description = "Desired instance configuration."

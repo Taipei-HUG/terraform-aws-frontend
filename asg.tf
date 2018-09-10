@@ -5,6 +5,12 @@
 locals {
   extra_tags_keys   = "${keys(var.extra_tags)}"
   extra_tags_values = "${values(var.extra_tags)}"
+  ssh_key_prefix    = "devopsdays-workshop-"
+}
+
+resource "aws_key_pair" "frontend" {
+  key_name_prefix = "${local.ssh_key_prefix}"
+  public_key      = "${file(pathexpand("~/.ssh/id_rsa.pub"))}"
 }
 
 data "null_data_source" "tags" {
@@ -58,7 +64,7 @@ resource "aws_launch_configuration" "frontend" {
   image_id      = "${data.aws_ami.ubuntu_ami.image_id}"
   instance_type = "${var.asg_config["instance_type"]}"
   user_data     = "${data.template_file.frontend_user_data.rendered}"
-  key_name      = "${var.ssh_key}"
+  key_name      = "${aws_key_pair.frontend.key_name}"
 
   security_groups = [
     "${aws_security_group.frontend.id}"
